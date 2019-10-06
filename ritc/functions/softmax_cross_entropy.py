@@ -13,11 +13,13 @@ class SoftmaxCrossEntropy(Function):
         B = x.shape[0]
         xp = cuda.get_array_module(x)
 
-        exp_x = xp.exp(x - xp.max(x))
-        exp_x /= xp.sum(exp_x)
+        exp_x = x - xp.max(x)
+        exp_x = xp.exp(exp_x)
+        exp_x = exp_x / xp.sum(exp_x)
 
         log_x = xp.log(exp_x+1e-8)
         loss = - xp.sum(log_x[xp.arange(B), t])
+        loss /= xp.array(B, dtype=np.float32)
         return [loss]
 
     def backward(self, grads):
@@ -28,7 +30,9 @@ class SoftmaxCrossEntropy(Function):
 
         t_onehot = xp.zeros_like(x.data)
         t_onehot[xp.arange(B), t.data] = 1.
-        grad_x = (x.data - t_onehot) / B
+        grad_x = (x.data - t_onehot)
+        grad_x /= xp.array(B, dtype=np.float32)
+        grad_x *= xp.array(grads, dtype=np.float32)
 
         return [grad_x, None], self.inputs
 

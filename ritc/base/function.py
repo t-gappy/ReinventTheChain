@@ -22,7 +22,7 @@ class Function(object):
             v._set_prev_func(self)
 
         return output_variables
-    
+
     def __getitem__(self, item):
         return self
 

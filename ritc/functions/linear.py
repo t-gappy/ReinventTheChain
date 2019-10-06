@@ -21,7 +21,7 @@ class Linear(Function):
         grad_W = x.data.T.dot(grad_y)
         grad_b = grad_y.sum(axis=0)
 
-        return [grad_x, grad_W, grad_b], self.inputs
+        return [grad_x, grad_W.T, grad_b], self.inputs
 
 
 def linear(x, W, b):

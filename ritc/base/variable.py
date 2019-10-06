@@ -19,6 +19,9 @@ class Variable(object):
     def set_grad(self, grad):
         self.grad = grad
 
+    def cleargrad(self):
+        self.grad = None
+
     def get_data(self):
         return self.data
 
@@ -47,6 +50,7 @@ class Variable(object):
         prev_funcs = [self.prev_func]
         variables = [self]
         depth_list = [self.depth]
+        #print(prev_funcs)
 
         while True:
             order = np.argsort(depth_list)
@@ -62,6 +66,7 @@ class Variable(object):
                 prev_funcs.append(v.prev_func)
                 variables.append(v)
                 depth_list.append(v.depth)
+            #print(prev_funcs)
 
             if prev_funcs == []:
                 break
