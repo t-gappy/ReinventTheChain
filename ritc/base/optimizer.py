@@ -1,3 +1,6 @@
+import numpy as np
+import copy
+
 class Optimizer(object):
     def __init__(self, lr=1e-2):
         self.lr = lr
@@ -7,6 +10,5 @@ class Optimizer(object):
         self.network = network
 
     def optimize(self):
-        for network_params in self.network.get_all_param():
-            for param in network_params:
-                param.data -= self.lr*param.grad
+        for param in self.network.get_all_param():
+            param.data -= self.lr*param.grad

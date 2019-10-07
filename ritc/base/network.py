@@ -22,7 +22,8 @@ class Chain(Network):
 
     def get_all_param(self):
         for net in self.networks:
-            yield net.param()
+            for param in net.param():
+                yield param
 
     def cleargrads(self):
         for net in self.networks:

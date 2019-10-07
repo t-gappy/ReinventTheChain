@@ -1,5 +1,6 @@
 import numpy as np
 from operator import itemgetter
+import copy
 
 class Variable(object):
     def __init__(self, x):
@@ -50,13 +51,12 @@ class Variable(object):
         prev_funcs = [self.prev_func]
         variables = [self]
         depth_list = [self.depth]
-        #print(prev_funcs)
 
         while True:
             order = np.argsort(depth_list)
             prev_funcs = sorted(prev_funcs, key=itemgetter(*order))
             variables = sorted(variables, key=itemgetter(*order))
-            grads, inputs = prev_funcs[0].backward([variables[0].data])
+            grads, inputs = prev_funcs[0].backward([variables[0].grad])
             prev_funcs, variables, depth_list = prev_funcs[1:], variables[1:], depth_list[1:]
 
             for v, g in zip(inputs, grads):
@@ -66,7 +66,6 @@ class Variable(object):
                 prev_funcs.append(v.prev_func)
                 variables.append(v)
                 depth_list.append(v.depth)
-            #print(prev_funcs)
 
             if prev_funcs == []:
                 break

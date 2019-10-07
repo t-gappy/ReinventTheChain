@@ -15,13 +15,14 @@ class Linear(Function):
     def backward(self, grads):
         grad_y = grads[0]
         x, W, _ = self.inputs
+        xp = cuda.get_array_module(x.data)
         y = self.outputs[0]
 
-        grad_x = grad_y.dot(W.data)
-        grad_W = x.data.T.dot(grad_y)
-        grad_b = grad_y.sum(axis=0)
+        grad_x = xp.dot(grad_y, W.data)
+        grad_W = xp.dot(grad_y.T, x.data)
+        grad_b = xp.sum(grad_y, axis=0)
 
-        return [grad_x, grad_W.T, grad_b], self.inputs
+        return [grad_x, grad_W, grad_b], self.inputs
 
 
 def linear(x, W, b):

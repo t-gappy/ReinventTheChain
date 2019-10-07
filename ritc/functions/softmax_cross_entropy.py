@@ -26,13 +26,12 @@ class SoftmaxCrossEntropy(Function):
         grad_y = grads[0]
         x, t = self.inputs
         B = x.data.shape[0]
-        xp = cuda.get_array_module(x)
+        xp = cuda.get_array_module(x.data)
 
         t_onehot = xp.zeros_like(x.data)
         t_onehot[xp.arange(B), t.data] = 1.
-        grad_x = (x.data - t_onehot)
+        grad_x = x.data - t_onehot
         grad_x /= xp.array(B, dtype=np.float32)
-        grad_x *= xp.array(grads, dtype=np.float32)
 
         return [grad_x, None], self.inputs
 
